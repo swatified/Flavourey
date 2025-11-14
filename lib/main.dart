@@ -3,8 +3,14 @@ import 'package:provider/provider.dart';
 import 'pages/splash_screen.dart';
 import 'services/cart_service.dart';
 import 'services/user_profile_service.dart';
+import 'services/app_config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await AppConfig.load();
+  AppConfig.validate();
+  
   runApp(
     MultiProvider(
       providers: [

@@ -98,7 +98,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           right: 0,
                           child: GestureDetector(
                             onTap: () {
-                              // TODO: Implement image picker
+                              // TODOImplement image picker
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Image picker coming soon!')),
                               );
