@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/food_item.dart';
 import '../services/food_data_service.dart';
+import 'dish_details_page.dart';
+import 'cart_page.dart';
+import 'package:provider/provider.dart';
+import '../services/cart_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -71,7 +75,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CartPage()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -222,123 +231,148 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildFoodCard(FoodItem item) {
-    return Container(
-      width: 180,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DishDetailsPage(dish: item),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: item.imageUrl,
-                  height: 130,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    height: 130,
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 130,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.restaurant, size: 50, color: Colors.grey),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.favorite_border,
-                    color: Color(0xFFFF9A56),
-                    size: 18,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          
-          // Details
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        );
+      },
+      child: Container(
+        width: 180,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            Stack(
               children: [
-                Text(
-                  item.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3142),
-                    height: 1.2,
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${item.ingredients.length} ingredients',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '₹${item.priceInr}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF9A56),
+                  child: CachedNetworkImage(
+                    imageUrl: item.imageUrl,
+                    height: 130,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      height: 130,
+                      color: Colors.grey[200],
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFF9A56),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 18,
-                      ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 130,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.restaurant, size: 50, color: Colors.grey),
                     ),
-                  ],
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.favorite_border,
+                      color: Color(0xFFFF9A56),
+                      size: 18,
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            
+            // Details
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2D3142),
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        item.rating > 0 ? item.rating.toStringAsFixed(1) : '-',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF2D3142),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '₹${item.priceInr}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF9A56),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Provider.of<CartService>(context, listen: false).addItem(item);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${item.title} added to cart')),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF9A56),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
