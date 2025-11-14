@@ -67,9 +67,27 @@ class CartPage extends StatelessWidget {
                                       fontSize: 14,
                                     ),
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.local_fire_department,
+                                        size: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${ci.item.calories * ci.quantity} kcal',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
                                   Text('₹${ci.item.priceInr} x ${ci.quantity} = ₹${ci.subtotal.toStringAsFixed(0)}',
-                                      style: TextStyle(color: Colors.grey[700])),
+                                      style: TextStyle(color: Colors.grey[700], fontSize: 13)),
                                 ],
                               ),
                             ),
@@ -105,38 +123,71 @@ class CartPage extends StatelessWidget {
                       BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -5)),
                     ],
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      // Calories Info Row
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF9A56).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('Total', style: TextStyle(color: Colors.grey)),
-                            const SizedBox(height: 4),
-                            Text('₹${cart.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            const Icon(
+                              Icons.local_fire_department,
+                              color: Color(0xFFFF9A56),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Total Calories: ${cart.totalCalories} kcal',
+                              style: const TextStyle(
+                                color: Color(0xFFFF9A56),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // For now, just clear cart and show confirmation
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: const Text('Order Placed'),
-                              content: const Text('Your order has been placed successfully.'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+                      const SizedBox(height: 16),
+                      // Price and Checkout Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Total', style: TextStyle(color: Colors.grey)),
+                                const SizedBox(height: 4),
+                                Text('₹${cart.totalPrice.toStringAsFixed(0)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                               ],
                             ),
-                          );
-                          cart.clear();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF9A56),
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                        ),
-                        child: const Text('Checkout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              // For now, just clear cart and show confirmation
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text('Order Placed'),
+                                  content: const Text('Your order has been placed successfully.'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+                                  ],
+                                ),
+                              );
+                              cart.clear();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFF9A56),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                            ),
+                            child: const Text('Checkout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
                       ),
                     ],
                   ),

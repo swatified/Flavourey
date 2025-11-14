@@ -168,3 +168,5 @@ app.*.map.json
 /android/app/release
 
 update_rice_images.py
+add_calories.py
+add_veg_nonveg.py

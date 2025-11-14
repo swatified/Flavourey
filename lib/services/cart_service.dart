@@ -19,6 +19,12 @@ class CartService extends ChangeNotifier {
 
   double get totalPrice => _items.values.fold(0.0, (s, e) => s + e.subtotal);
 
+  int get totalCalories => _items.values.fold(0, (s, e) => s + (e.item.calories * e.quantity));
+
+  int getItemQuantity(String title) {
+    return _items.containsKey(title) ? _items[title]!.quantity : 0;
+  }
+
   void addItem(FoodItem food, {int quantity = 1}) {
     final key = food.title;
     if (_items.containsKey(key)) {

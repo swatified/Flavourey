@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/food_item.dart';
 import '../services/cart_service.dart';
 import 'cart_page.dart';
-import 'home_page.dart';
 
 class DishDetailsPage extends StatefulWidget {
   final FoodItem dish;
@@ -124,6 +123,48 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                               fontSize: 14,
                             ),
                           ),
+                          const SizedBox(width: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: widget.dish.dietType.toLowerCase() == 'veg' 
+                                  ? Colors.green 
+                                  : Colors.red,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white, width: 2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.dish.dietType,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -139,18 +180,11 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          const Icon(Icons.access_time, size: 20, color: Colors.grey),
-                          const SizedBox(width: 8),
-                          const Text(
-                            '25-30 min',
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          const SizedBox(width: 24),
                           const Icon(Icons.local_fire_department, size: 20, color: Colors.grey),
                           const SizedBox(width: 8),
-                          const Text(
-                            '250 kcal',
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                          Text(
+                            '${widget.dish.calories} kcal',
+                            style: const TextStyle(color: Colors.grey, fontSize: 14),
                           ),
                         ],
                       ),
@@ -264,7 +298,6 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                             child: _buildOrderTypeCard(
                               icon: Icons.delivery_dining,
                               title: 'Delivery',
-                              subtitle: '25-30 min',
                               value: 'delivery',
                             ),
                           ),
@@ -273,7 +306,6 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                             child: _buildOrderTypeCard(
                               icon: Icons.shopping_bag_outlined,
                               title: 'Pickup',
-                              subtitle: '15-20 min',
                               value: 'pickup',
                             ),
                           ),
@@ -393,7 +425,7 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
   Widget _buildOrderTypeCard({
     required IconData icon,
     required String title,
-    required String subtitle,
+    String? subtitle,
     required String value,
   }) {
     final isSelected = _orderType == value;
@@ -427,14 +459,16 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                 color: isSelected ? const Color(0xFFFF9A56) : const Color(0xFF2D3142),
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -501,12 +535,9 @@ class _DishDetailsPageState extends State<DishDetailsPage> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        // Close dialog then navigate to Home (continue shopping)
-                        Navigator.pop(context);
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (_) => const HomePage(title: 'Flutter Demo Home Page')),
-                          (route) => false,
-                        );
+                        // Close dialog and pop back to home
+                        Navigator.pop(context); // Close dialog
+                        Navigator.pop(context); // Go back to home
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF2D3142),
