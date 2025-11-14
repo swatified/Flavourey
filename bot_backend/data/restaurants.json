@@ -1,0 +1,157 @@
+{
+  "restaurants": [
+    {
+      "id": "rest_001",
+      "name": "Spice Garden",
+      "cuisine": "North Indian",
+      "rating": 4.5,
+      "delivery_time_mins": 30
+    },
+    {
+      "id": "rest_002",
+      "name": "Comfort Kitchen",
+      "cuisine": "Multi-Cuisine",
+      "rating": 4.3,
+      "delivery_time_mins": 25
+    },
+    {
+      "id": "rest_003",
+      "name": "The Green Bowl",
+      "cuisine": "Healthy & Vegan",
+      "rating": 4.7,
+      "delivery_time_mins": 35
+    }
+  ],
+  "menu_items": [
+    {
+      "id": "item_001",
+      "restaurant_id": "rest_001",
+      "name": "Butter Chicken",
+      "price": 280,
+      "category": "Main Course",
+      "veg": false,
+      "spice_level": "medium",
+      "allergens": ["dairy", "nuts"],
+      "tags": ["comfort", "rich", "creamy"],
+      "moods": ["happy", "romantic", "stressed"],
+      "calories": 450
+    },
+    {
+      "id": "item_002",
+      "restaurant_id": "rest_001",
+      "name": "Palak Paneer",
+      "price": 220,
+      "category": "Main Course",
+      "veg": true,
+      "spice_level": "mild",
+      "allergens": ["dairy"],
+      "tags": ["healthy", "comfort", "vegetarian"],
+      "moods": ["happy", "relaxed"],
+      "calories": 320
+    },
+    {
+      "id": "item_003",
+      "restaurant_id": "rest_001",
+      "name": "Garlic Naan",
+      "price": 50,
+      "category": "Bread",
+      "veg": true,
+      "spice_level": "mild",
+      "allergens": ["gluten", "dairy"],
+      "tags": ["side", "comfort"],
+      "moods": ["happy", "energetic", "stressed"],
+      "calories": 200
+    },
+    {
+      "id": "item_004",
+      "restaurant_id": "rest_002",
+      "name": "Mac & Cheese",
+      "price": 200,
+      "category": "Main Course",
+      "veg": true,
+      "spice_level": "none",
+      "allergens": ["dairy", "gluten"],
+      "tags": ["comfort", "cheesy", "creamy"],
+      "moods": ["sad", "stressed", "relaxed"],
+      "calories": 500
+    },
+    {
+      "id": "item_005",
+      "restaurant_id": "rest_002",
+      "name": "Chocolate Lava Cake",
+      "price": 150,
+      "category": "Dessert",
+      "veg": true,
+      "spice_level": "none",
+      "allergens": ["dairy", "gluten", "eggs"],
+      "tags": ["sweet", "rich", "indulgent"],
+      "moods": ["sad", "happy", "romantic"],
+      "calories": 380
+    },
+    {
+      "id": "item_006",
+      "restaurant_id": "rest_003",
+      "name": "Quinoa Power Bowl",
+      "price": 300,
+      "category": "Main Course",
+      "veg": true,
+      "spice_level": "mild",
+      "allergens": [],
+      "tags": ["healthy", "protein", "vegan"],
+      "moods": ["energetic", "relaxed"],
+      "calories": 280
+    },
+    {
+      "id": "item_007",
+      "restaurant_id": "rest_003",
+      "name": "Green Smoothie",
+      "price": 120,
+      "category": "Beverage",
+      "veg": true,
+      "spice_level": "none",
+      "allergens": [],
+      "tags": ["healthy", "refreshing", "vegan"],
+      "moods": ["energetic", "happy"],
+      "calories": 150
+    },
+    {
+      "id": "item_008",
+      "restaurant_id": "rest_001",
+      "name": "Chicken Biryani",
+      "price": 320,
+      "category": "Main Course",
+      "veg": false,
+      "spice_level": "high",
+      "allergens": ["dairy"],
+      "tags": ["spicy", "aromatic", "filling"],
+      "moods": ["energetic", "happy", "angry"],
+      "calories": 550
+    },
+    {
+      "id": "item_009",
+      "restaurant_id": "rest_002",
+      "name": "Mushroom Soup",
+      "price": 130,
+      "category": "Starter",
+      "veg": true,
+      "spice_level": "mild",
+      "allergens": ["dairy"],
+      "tags": ["comfort", "warm", "light"],
+      "moods": ["sad", "stressed", "relaxed"],
+      "calories": 180
+    },
+    {
+      "id": "item_010",
+      "restaurant_id": "rest_003",
+      "name": "Avocado Toast",
+      "price": 180,
+      "category": "Breakfast",
+      "veg": true,
+      "spice_level": "none",
+      "allergens": ["gluten"],
+      "tags": ["healthy", "light", "vegan"],
+      "moods": ["happy", "energetic"],
+      "calories": 250
+    }
+  ]
+}
