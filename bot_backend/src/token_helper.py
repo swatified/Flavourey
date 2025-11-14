@@ -1,43 +1,34 @@
-# to generate Agora RTC tokens and get help with it too
-from typing import Optional
-import time
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-def generate_rtc_token(app_id: str, app_certificate: str, channel: str, uid: Optional[int] = 0, role: int = 1, expire_seconds: int = 3600) -> str:
-    """Generate an RTC token using the Agora token builder package.
+from src.RtcTokenBuilder2 import *
 
-    Parameters:
-    - app_id: Agora App ID
-    - app_certificate: Agora App Certificate (secret)
-    - channel: channel name
-    - uid: numeric uid (0 means random if you prefer)
-    - role: 1 = publisher/host (in some builders it's role: rtc Role)
-    - expire_seconds: token TTL in seconds
+def main():
+    # Get the value of the environment variable AGORA_APP_ID. Make sure you set this variable to the App ID you obtained from Agora console.
+    app_id = os.environ.get("AGORA_APP_ID")
+    # Get the value of the environment variable AGORA_APP_CERTIFICATE. Make sure you set this variable to the App certificate you obtained from Agora console
+    app_certificate = os.environ.get("AGORA_APP_CERTIFICATE")
+    # Replace channelName with the name of the channel you want to join
+    channel_name = ""
+    # Fill in your actual user ID
+    uid = 2882341273
+    # Token validity time in seconds
+    token_expiration_in_seconds = 3600
+    # The validity time of all permissions in seconds
+    privilege_expiration_in_seconds = 3600
 
-    Returns: token string
-    """
-    try:
-        # The common token builder module name
-        from agora_token_builder import RtcTokenBuilder
-    except Exception as e:
-        raise RuntimeError(
-            "Agora token builder package not installed. Run: pip install agora-access-token\n" \
-            "or install the appropriate agora token builder package for your environment.\n" \
-            "Original error: " + str(e)
-        )
+    print("App Id: %s" % app_id)
+    print("App Certificate: %s" % app_certificate)
+    if not app_id or not app_certificate:
+        print("Need to set environment variable AGORA_APP_ID and AGORA_APP_CERTIFICATE")
+        return
 
-    current_ts = int(time.time())
-    privilege_expired_ts = current_ts + int(expire_seconds)
-    # RtcTokenBuilder.buildTokenWithUid takes role value from the builder; common usage sets role=1 for publisher
-    token = RtcTokenBuilder.buildTokenWithUid(app_id, app_certificate, channel, uid, role, privilege_expired_ts)
-    return token
+    # Generate Token
+    token = RtcTokenBuilder.build_token_with_uid(app_id, app_certificate, channel_name, uid, Role_Subscriber,
+                                                 token_expiration_in_seconds, privilege_expiration_in_seconds)
+    print("Token with int uid: {}".format(token))
 
-
-if __name__ == '__main__':
-    import os
-    APP_ID = os.environ.get('AGORA_APP_ID')
-    APP_CERT = os.environ.get('AGORA_APP_CERT')
-    if not APP_ID or not APP_CERT:
-        print('Set AGORA_APP_ID and AGORA_APP_CERT in env to generate a token')
-    else:
-        print(generate_rtc_token(APP_ID, APP_CERT, 'testchannel', uid=0, expire_seconds=3600))
+if __name__ == "__main__":
+    main()

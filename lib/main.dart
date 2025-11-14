@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/splash_screen.dart';
 import 'services/cart_service.dart';
+import 'services/user_profile_service.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => CartService(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartService()),
+        ChangeNotifierProvider(create: (_) => UserProfileService()..loadProfile()),
+      ],
       child: const MyApp(),
     ),
   );

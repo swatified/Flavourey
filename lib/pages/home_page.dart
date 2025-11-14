@@ -6,6 +6,7 @@ import 'dish_details_page.dart';
 import 'cart_page.dart';
 import 'package:provider/provider.dart';
 import '../services/cart_service.dart';
+import '../services/user_profile_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.title = 'Flavourey'});
@@ -290,17 +291,27 @@ class _HomePageState extends State<HomePage> {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(
-                          Icons.favorite_border,
-                          color: Color(0xFFFF9A56),
-                          size: 18,
-                        ),
+                      child: Consumer<UserProfileService>(
+                        builder: (context, profileService, _) {
+                          final isFavorite = profileService.isFavorite(item.title);
+                          return GestureDetector(
+                            onTap: () {
+                              profileService.toggleFavorite(item.title);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : const Color(0xFFFF9A56),
+                                size: 18,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
