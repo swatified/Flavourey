@@ -43,6 +43,10 @@ class AgoraConversationalAIConfig:
         "AGORA_API_BASE",
         "https://api.agora.io/api/conversational-ai-agent/v2"
     )
+    
+    # RTC Tokens (for testing - should be generated dynamically in production)
+    RTC_TOKEN_INT_UID: str = os.environ.get("AGORA_RTC_TOKEN_INT_UID", "")
+    RTC_TOKEN_USER_ACCOUNT: str = os.environ.get("AGORA_RTC_TOKEN_USER_ACCOUNT", "")
 
 
 class GeminiConfig:
