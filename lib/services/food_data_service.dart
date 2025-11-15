@@ -11,7 +11,7 @@ class FoodDataService {
     }
 
     try {
-      final csvString = await rootBundle.loadString('assets/dataset/Indian-Food-Dataset.csv');
+      final csvString = await rootBundle.loadString('assets/dataset/Indian-Food-Data.csv');
       List<List<dynamic>> csvTable = const CsvToListConverter().convert(csvString);
       
       // Skip header row

@@ -66,7 +66,7 @@ class LLMConfig:
     """Configuration for external LLM API."""
     
     API_KEY: str = os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY", "")
-    API_URL: str = os.environ.get("LLM_API_URL", "http://localhost:8000/chat/completions")
+    API_URL: str = os.environ.get("LLM_API_URL", "https://m5vdftcq-8000.inc1.devtunnels.ms/chat/completions")
     MODEL: str = os.environ.get("LLM_MODEL", "gpt-4o-mini")
 
 
@@ -74,8 +74,7 @@ class TTSConfig:
     """Configuration for Text-to-Speech (Microsoft Azure)."""
     
     API_KEY: str = os.environ.get("TTS_API_KEY", "")
-    REGION: str = os.environ.get("TTS_REGION", "eastus")
-    VOICE_NAME: str = os.environ.get("TTS_VOICE_NAME", "en-US-JennyNeural")
+    VOICE_ID: str = os.environ.get("TTS_VOICE_ID", "FZkK3TvQ0pjyDmT8fzIW")
 
 
 class AppConfig:

@@ -122,8 +122,7 @@ async def start_conversational_agent(
                 "vendor": "microsoft",
                 "params": {
                     "key": tts_config.API_KEY,
-                    "region": tts_config.REGION,
-                    "voice_name": tts_config.VOICE_NAME,
+                    "voice_id": tts_config.VOICE_ID,
                 },
             },
         },
