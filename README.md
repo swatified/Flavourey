@@ -1,5 +1,7 @@
 # Mood-Based AI — Agora Conversational Recommender (Python prototype)
 
+### Demo video:- [Click Me](https://drive.google.com/file/d/1kCh6berH24oJBa4dsaz4uWPhO3zrfBUv/view?usp=drivesdk)
+
 This repository contains a voice-first, text-first Python prototype of a mood-based food recommender.
 It uses:
 - Agora Conversational AI Engine (scaffolded integration)
