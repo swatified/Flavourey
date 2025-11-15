@@ -43,6 +43,11 @@ class AgoraConversationalAIConfig:
         "AGORA_API_BASE",
         "https://api.agora.io/api/conversational-ai-agent/v2"
     )
+    CONV_AI_BASE_URL: str = os.environ.get(
+        "AGORA_CONV_AI_BASE_URL",
+        "https://api.agora.io/api/conversational-ai-agent/v2"
+    )
+    AGENT_IDLE_TIMEOUT: int = int(os.environ.get("AGORA_AGENT_IDLE_TIMEOUT", "120"))
     
     # RTC Tokens (for testing - should be generated dynamically in production)
     RTC_TOKEN_INT_UID: str = os.environ.get("AGORA_RTC_TOKEN_INT_UID", "")
@@ -55,6 +60,22 @@ class GeminiConfig:
     API_KEY: str = os.environ.get("GEMINI_API_KEY", "")
     DEFAULT_MODEL: str = os.environ.get("DEFAULT_MODEL", "gemini-2.5-pro")
     BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+
+class LLMConfig:
+    """Configuration for external LLM API."""
+    
+    API_KEY: str = os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY", "")
+    API_URL: str = os.environ.get("LLM_API_URL", "http://localhost:8000/chat/completions")
+    MODEL: str = os.environ.get("LLM_MODEL", "gpt-4o-mini")
+
+
+class TTSConfig:
+    """Configuration for Text-to-Speech (Microsoft Azure)."""
+    
+    API_KEY: str = os.environ.get("TTS_API_KEY", "")
+    REGION: str = os.environ.get("TTS_REGION", "eastus")
+    VOICE_NAME: str = os.environ.get("TTS_VOICE_NAME", "en-US-JennyNeural")
 
 
 class AppConfig:
@@ -70,4 +91,6 @@ class AppConfig:
 agora_chat = AgoraChatConfig()
 agora_ai = AgoraConversationalAIConfig()
 gemini = GeminiConfig()
+llm_config = LLMConfig()
+tts_config = TTSConfig()
 app_config = AppConfig()

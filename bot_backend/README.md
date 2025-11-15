@@ -36,19 +36,43 @@ pip install -r requirements.txt
 
 ### 3. Environment Variables
 
-Create `.env` file in `bot_backend/` directory:
+Create `.env` file in `bot_backend/` directory (or use root `.env`):
 
 ```env
-# Required
+# Required for text chat
 GEMINI_API_KEY=your_gemini_api_key_here
 
-# Optional
-GEMINI_MODEL=gemini-2.5 pro
+# Optional for text chat
+GEMINI_MODEL=gemini-2.5-pro
 PORT=8000
 DATA_CSV=../Indian-Food-Data.csv
 LOGS_DIR=logs
 
-# Agora (optional, for voice integration)
+# Required for Conversational AI agent (voice)
+AGORA_APP_ID=your_agora_app_id
+AGORA_APP_CERT=your_agora_app_certificate
+AGORA_CUSTOMER_ID=your_customer_id
+AGORA_CUSTOMER_SECRET=your_customer_secret
+
+# Conversational AI LLM configuration
+GEMINI_API_KEY=your_GEMINI_API_KEY
+LLM_API_URL=http://localhost:8000/chat/completions
+LLM_MODEL=gpt-4o-mini
+
+# Text-to-Speech configuration (Microsoft Azure)
+TTS_API_KEY=your_azure_tts_key
+TTS_REGION=eastus
+TTS_VOICE_NAME=en-US-JennyNeural
+
+# Optional Conversational AI settings
+AGORA_CONV_AI_BASE_URL=https://api.agora.io/api/conversational-ai-agent/v2
+AGORA_AGENT_IDLE_TIMEOUT=120
+```
+
+**Note**: For voice integration, you need:
+- Agora account with Conversational AI enabled
+- Microsoft Azure account for TTS (or use Agora's built-in TTS)
+- The LLM_API_URL can point to this same server's `/chat/completions` endpoint
 AGORA_APP_ID=your_app_id
 AGORA_APP_CERT=your_app_cert
 AGORA_CUSTOMER_ID=your_customer_id
@@ -234,8 +258,10 @@ Edit `FLAVOUREY_SYSTEM_PROMPT` in `src/llm.py`.
 
 ## Testing
 
+### Text Chat
+
 ```powershell
-# Test health
+# Health check
 curl http://localhost:8000/
 
 # Test chat completions (non-streaming)
@@ -251,6 +277,54 @@ curl -X POST http://localhost:8000/chat/completions `
 curl -X POST http://localhost:8000/chat/completions `
   -H "Content-Type: application/json" `
   -d @test_tool_request.json
+```
+
+### Conversational AI Agent (Voice)
+
+```powershell
+# Start a Conversational AI agent
+curl -X POST http://localhost:8000/api/ai/agent/start `
+  -H "Content-Type: application/json" `
+  -d '{
+    "channelName": "test_channel_123",
+    "rtcToken": "YOUR_RTC_TOKEN",
+    "sessionKey": "user-session-123",
+    "userContext": {
+      "mood": "happy",
+      "allergies": ["peanuts", "shellfish"]
+    }
+  }'
+
+# Response:
+# {
+#   "agentId": "agent_abc123",
+#   "status": "RUNNING",
+#   "sessionKey": "user-session-123"
+# }
+
+# Stop a Conversational AI agent
+curl -X POST http://localhost:8000/api/ai/agent/stop `
+  -H "Content-Type: application/json" `
+  -d '{
+    "sessionKey": "user-session-123"
+  }'
+
+# Response:
+# {
+#   "ok": true,
+#   "agentStopped": true
+# }
+
+# Generate RTC token (for agent and client)
+curl -X POST "http://localhost:8000/api/token/generate?channel=test_channel_123&uid=0"
+
+# Response:
+# {
+#   "token": "006abc...",
+#   "app_id": "your_app_id",
+#   "channel": "test_channel_123",
+#   "uid": 0
+# }
 ```
 
 ## Troubleshooting

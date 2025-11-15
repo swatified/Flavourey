@@ -17,7 +17,7 @@ class VoiceSessionInfo {
 
   factory VoiceSessionInfo.fromJson(Map<String, dynamic> json) {
     return VoiceSessionInfo(
-      sessionId: json['agent_id'] ?? json['sessionId'] ?? '',
+      sessionId: json['agentId'] ?? json['agent_id'] ?? json['sessionId'] ?? '',
       channelName: json['channel'] ?? json['channelName'] ?? '',
       rtcToken: json['rtc_token'] ?? json['rtcToken'] ?? '',
       rtcUid: (json['rtc_uid'] ?? json['rtcUid'] ?? 0) is int
@@ -66,9 +66,9 @@ class VoiceSessionApi {
       final tokenData = jsonDecode(tokenResponse.body);
       final rtcToken = tokenData['token'] as String;
 
-      debugPrint('[VoiceSessionApi] Token generated, starting agent...');
+      debugPrint('[VoiceSessionApi] Token generated, starting Conversational AI agent...');
 
-      final agentUrl = Uri.parse('$baseUrl/api/agent/start');
+      final agentUrl = Uri.parse('$baseUrl/api/ai/agent/start');
       final agentResponse = await http.post(
         agentUrl,
         headers: {
@@ -76,9 +76,13 @@ class VoiceSessionApi {
           ...?defaultHeaders,
         },
         body: jsonEncode({
-          'channel': channelName,
-          'rtc_token': rtcToken,
-          'agent_rtc_uid': '0',
+          'channelName': channelName,
+          'rtcToken': rtcToken,
+          'sessionKey': 'user_${userId}_session',
+          'userContext': {
+            'mood': null,
+            'allergies': [],
+          },
         }),
       );
 
@@ -89,10 +93,10 @@ class VoiceSessionApi {
 
       final agentData = jsonDecode(agentResponse.body);
       
-      debugPrint('[VoiceSessionApi] Agent started: ${agentData['agent_id']}');
+      debugPrint('[VoiceSessionApi] Conversational AI agent started: ${agentData['agentId']}');
 
       return VoiceSessionInfo(
-        sessionId: agentData['agent_id'] as String,
+        sessionId: agentData['agentId'] as String,
         channelName: channelName,
         rtcToken: rtcToken,
         rtcUid: userUid,
@@ -104,10 +108,10 @@ class VoiceSessionApi {
   }
 
   Future<void> stopSession(String sessionId) async {
-    final url = Uri.parse('$baseUrl/api/agent/leave');
+    final url = Uri.parse('$baseUrl/api/ai/agent/stop');
 
     try {
-      debugPrint('[VoiceSessionApi] Stopping session: $sessionId');
+      debugPrint('[VoiceSessionApi] Stopping Conversational AI session: $sessionId');
 
       final response = await http.post(
         url,
@@ -116,7 +120,7 @@ class VoiceSessionApi {
           ...?defaultHeaders,
         },
         body: jsonEncode({
-          'agent_id': sessionId,
+          'sessionKey': sessionId,
         }),
       );
 
@@ -125,7 +129,7 @@ class VoiceSessionApi {
             'Failed to stop session: ${response.statusCode} ${response.body}');
       }
 
-      debugPrint('[VoiceSessionApi] Session stopped successfully');
+      debugPrint('[VoiceSessionApi] Conversational AI session stopped successfully');
     } catch (e) {
       debugPrint('[VoiceSessionApi] Error stopping session: $e');
       rethrow;

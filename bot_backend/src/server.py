@@ -14,6 +14,8 @@ from .logging_store import ConversationStore
 from .conversation import ConversationManager
 from .agora_connector import AgoraConnector
 from .token_helper import generate_rtc_token
+from .agora_conversational_agent import start_conversational_agent, stop_conversational_agent
+from .agent_session_store import save_agent, get_agent, remove_agent
 import logging
 
 
@@ -94,6 +96,29 @@ class DebugClassifyResponse(BaseModel):
     mood: Optional[str] = None
     confidence: Optional[float] = None
     raw: Optional[dict] = None
+
+
+class StartConversationalAgentRequest(BaseModel):
+    channelName: str
+    rtcToken: str
+    sessionKey: Optional[str] = None
+    userContext: Optional[dict] = None
+
+
+class StartConversationalAgentResponse(BaseModel):
+    agentId: str
+    status: str
+    sessionKey: str
+
+
+class StopConversationalAgentRequest(BaseModel):
+    channelName: Optional[str] = None
+    sessionKey: Optional[str] = None
+
+
+class StopConversationalAgentResponse(BaseModel):
+    ok: bool
+    agentStopped: bool
 
 
 # Tool executor for /chat/completions
@@ -321,6 +346,89 @@ async def list_agents(channel: Optional[str] = None, state: Optional[int] = None
         res = await agora.list_agents(channel=channel, state=state, limit=limit)
         return res
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post('/api/ai/agent/start', response_model=StartConversationalAgentResponse)
+async def start_ai_agent(req: StartConversationalAgentRequest):
+    """
+    Start an Agora Conversational AI agent in the specified channel.
+    
+    This creates a voice AI agent that joins the RTC channel and can
+    have real-time conversations with users.
+    """
+    if not req.channelName or not req.rtcToken:
+        raise HTTPException(
+            status_code=400,
+            detail='channelName and rtcToken are required'
+        )
+    
+    session_key = req.sessionKey or req.channelName
+    
+    try:
+        logger.info(f"Starting Conversational AI agent for session: {session_key}")
+        
+        result = await start_conversational_agent(
+            channel_name=req.channelName,
+            rtc_token=req.rtcToken,
+            user_context=req.userContext,
+        )
+        
+        save_agent(session_key, result["agent_id"])
+        
+        return StartConversationalAgentResponse(
+            agentId=result["agent_id"],
+            status=result["status"],
+            sessionKey=session_key,
+        )
+        
+    except ValueError as e:
+        logger.error(f"Configuration error: {e}")
+        raise HTTPException(status_code=500, detail=f"Configuration error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Failed to start agent: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post('/api/ai/agent/stop', response_model=StopConversationalAgentResponse)
+async def stop_ai_agent(req: StopConversationalAgentRequest):
+    """
+    Stop an Agora Conversational AI agent.
+    
+    This terminates the AI agent and removes it from the RTC channel.
+    """
+    if not req.sessionKey and not req.channelName:
+        raise HTTPException(
+            status_code=400,
+            detail='Either sessionKey or channelName is required'
+        )
+    
+    session_key = req.sessionKey or req.channelName
+    
+    try:
+        agent_id = get_agent(session_key)
+        
+        if not agent_id:
+            logger.warning(f"No agent found for session: {session_key}")
+            return StopConversationalAgentResponse(
+                ok=True,
+                agentStopped=False,
+            )
+        
+        logger.info(f"Stopping agent {agent_id} for session: {session_key}")
+        
+        success = await stop_conversational_agent(agent_id)
+        
+        if success:
+            remove_agent(session_key)
+        
+        return StopConversationalAgentResponse(
+            ok=True,
+            agentStopped=success,
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to stop agent: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
