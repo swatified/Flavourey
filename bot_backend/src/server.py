@@ -13,7 +13,6 @@ from .recommender import Recommender, search_menu_items
 from .logging_store import ConversationStore
 from .conversation import ConversationManager
 from .agora_connector import AgoraConnector
-from .token_helper import generate_rtc_token
 from .agora_conversational_agent import start_conversational_agent, stop_conversational_agent
 from .agent_session_store import save_agent, get_agent, remove_agent
 import logging
@@ -429,24 +428,6 @@ async def stop_ai_agent(req: StopConversationalAgentRequest):
         
     except Exception as e:
         logger.error(f"Failed to stop agent: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post('/api/token/generate')
-async def generate_token(channel: str, uid: Optional[int] = 0, expire_seconds: Optional[int] = 3600):
-    """Generate an RTC token using AGORA_APP_ID and AGORA_APP_CERT from environment.
-
-    Note: This endpoint should be secured in production. It uses App Certificate
-    present in the server environment to mint tokens for clients.
-    """
-    app_id = os.environ.get('AGORA_APP_ID')
-    app_cert = os.environ.get('AGORA_APP_CERT')
-    if not app_id or not app_cert:
-        raise HTTPException(status_code=400, detail='AGORA_APP_ID and AGORA_APP_CERT must be set in environment')
-    try:
-        token = generate_rtc_token(app_id, app_cert, channel, uid=uid, expire_seconds=expire_seconds)
-        return {'token': token, 'app_id': app_id, 'channel': channel, 'uid': uid}
-    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 

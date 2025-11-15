@@ -8,7 +8,11 @@ import logging
 from typing import Optional, Dict, Any
 from datetime import datetime
 
-from ..config import agora_ai, llm_config, tts_config
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from config import agora_ai, llm_config, tts_config
 
 logger = logging.getLogger(__name__)
 
